@@ -1,0 +1,51 @@
+---
+layout: default
+---
+
+<!-- The heading, the one-line introduction and the portrait are all taken from
+     _config.yml and from assets/images/profile-pic.jpg, so there is nothing to
+     edit in this file. Write your About Me text in index.md. -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>{{ site.name }}</h1>
+    <p class="lede">{{ site.description }}</p>
+    <p class="hero-links">
+      <a href="{{ "/projects/" | relative_url }}">See my work</a>
+      <a href="{{ "/cv/" | relative_url }}">Read my CV</a>
+    </p>
+  </div>
+  <img class="hero-portrait" src="{{ "/assets/images/profile-pic.jpg" | relative_url }}"
+       alt="Portrait of {{ site.name }}">
+</div>
+
+{% if site.projects.size > 0 %}
+<section class="home-work">
+  <h2>Selected work</h2>
+  <div class="project-gallery">
+    {%- comment -%}
+      Three projects, newest first. Any project with `featured: true` in its front
+      matter comes first; the newest of the rest fill the remaining places.
+
+      The two tests below are opposites of one another on purpose, so that no
+      project can land in both lists and be shown twice. `where_exp` takes one
+      comparison and no `and`/`or`, which is why this is two filters.
+    {%- endcomment -%}
+    {% assign newest = site.projects | reverse %}
+    {% assign featured = newest | where_exp: "p", "p.featured == true" %}
+    {% assign rest = newest | where_exp: "p", "p.featured != true" %}
+    {% assign selected = featured | concat: rest | slice: 0, 3 %}
+    {% for project in selected %}
+      {% include project-card.html project=project heading="h3" %}
+    {% endfor %}
+  </div>
+  <p class="more-link"><a href="{{ "/projects/" | relative_url }}">See all projects</a></p>
+</section>
+{% endif %}
+
+<!-- Whatever you write in index.md appears here, under the work. -->
+{% assign about = content | strip %}
+{% if about != "" %}
+<section class="home-about">
+  {{ content }}
+</section>
+{% endif %}

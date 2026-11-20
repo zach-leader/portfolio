@@ -1,0 +1,16 @@
+---
+layout: default
+---
+
+<!-- The page title and the cards share the same left and right edges. -->
+<div class="gallery-container">
+  {{ content }}
+
+  <!-- One card per file in the _projects folder, newest first. -->
+  <div class="project-gallery">
+    {% assign newest = site.projects | reverse %}
+    {% for project in newest %}
+      {% include project-card.html project=project %}
+    {% endfor %}
+  </div>
+</div>

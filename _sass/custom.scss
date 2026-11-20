@@ -1,0 +1,503 @@
+// ---------------------------------------------------------------------------
+//  Colour schemes
+//
+//  Pick one with `color_scheme:` in _config.yml. Each scheme sets the same six
+//  colours, and every rule further down is built from those six — so changing a
+//  colour here changes it everywhere it is used.
+// ---------------------------------------------------------------------------
+
+// light — the default
+$bg:      #fbfaf9;   // the page itself
+$surface: #ffffff;   // anything sitting on top of the page
+$ink:     #1a1a19;   // body text and headings
+$muted:   #6b6963;   // quieter text: dates, tools, captions
+$line:    #e3e0da;   // hairlines, under the header and between projects
+$accent:  #9d1c20;   // the one highlight colour: links, and the page you are on
+
+// The hamburger menu button is drawn as a picture, so its colour has to be
+// written out separately. %23 is how a "#" is written inside a picture address.
+$menu-icon: '%231a1a19';
+
+@if $color_scheme == 'dark' {
+  $bg: #14161a;  $surface: #1b1e24;  $ink: #e8e9ec;
+  $muted: #9aa0ab;  $line: #2b2f37;  $accent: #e78a8c;
+  $menu-icon: '%23e8e9ec';
+} @else if $color_scheme == 'aqua' {
+  $bg: #f2f6f5;  $surface: #ffffff;  $ink: #10201f;
+  $muted: #586b69;  $line: #d8e3e0;  $accent: #2f6f6a;
+} @else if $color_scheme == 'desert' {
+  $bg: #faf6ef;  $surface: #ffffff;  $ink: #22190f;
+  $muted: #736354;  $line: #e8ded0;  $accent: #8a4b2a;
+}
+
+// Spacing. Everything on the page is spaced with one of these six values, which
+// is what keeps the gaps looking deliberate rather than picked one at a time.
+$s-1: .5rem;  $s-2: .75rem;  $s-3: 1rem;  $s-4: 1.5rem;  $s-5: 2.5rem;  $s-6: 4rem;
+
+// The two typefaces come from Google Fonts, loaded in _layouts/default.html. If
+// one of them does not arrive, the browser uses the next name in the list, so
+// the page keeps its shape either way.
+//
+// $font-head is only for the big things: your name, and the title of a page or
+// a project. Everything else, smaller headings included, is $font-body.
+$font-body: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-head: 'Merriweather', Georgia, 'Times New Roman', serif;
+$font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+// The width of the reading column. Widen it here if you want longer lines.
+$measure: 40rem;
+// The width of the picture galleries, which are allowed to be wider.
+$wide: 1080px;
+// The CV is scanned rather than read straight through, so it sits between the
+// two: wider than the reading column, narrower than a gallery.
+$measure-cv: 48rem;
+
+// ---------------------------------------------------------------------------
+//  Page basics
+// ---------------------------------------------------------------------------
+
+body {
+  font-family: $font-body;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  background-color: $bg;
+  color: $ink;
+  margin: 0;
+  padding: 0;
+}
+
+// Headings below the title are set in the body typeface, slightly bolder and a
+// little tighter than ordinary text.
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-body;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+
+// The title of a page is the one place the serif is used. Two things keep it
+// from looking heavy: it is set at 500 rather than bold — raise it to 700 here
+// if you want your name to shout — and `font-optical-sizing` lets the typeface
+// switch to the finer shapes it keeps for large sizes.
+h1 {
+  font-family: $font-head;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-size: 2.375rem;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin: 0 0 $s-4;
+}
+
+h2 { font-size: 1.375rem;  margin: $s-5 0 $s-2; }
+h3 { font-size: 1.125rem;  margin: $s-4 0 $s-1; }
+
+p { margin: 0 0 $s-3; }
+
+main a { color: $accent; }
+
+// A one-line introduction, larger and quieter than body text.
+.lede {
+  font-size: 1.1875rem;
+  color: $muted;
+  line-height: 1.5;
+}
+
+// Dates and tool names. Small, spaced out, and in the typewriter font, which is
+// the one place this design borrows from an engineering drawing.
+.card-meta {
+  font-family: $font-mono;
+  font-size: .6875rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: $muted;
+  margin: 0;
+}
+
+// The --- lines between sections of a CV.
+main hr {
+  border: 0;
+  border-top: 1px solid $line;
+  margin: $s-5 0;
+}
+
+// Tables have no styling of their own in Bootstrap unless a class is added, and
+// a wide one would otherwise run off the side of the page.
+main table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9375rem;
+  margin-bottom: $s-4;
+}
+
+main th, main td {
+  text-align: left;
+  padding: $s-1 $s-2 $s-1 0;
+  border-bottom: 1px solid $line;
+  overflow-wrap: anywhere;
+}
+
+main th { font-weight: 600; }
+
+// Bootstrap puts no limit on the width of a picture, so a photo straight from a
+// phone runs off the side of the page. This stops that, everywhere.
+main img {
+  max-width: 100%;
+  height: auto;
+}
+
+// ---------------------------------------------------------------------------
+//  Header and footer
+// ---------------------------------------------------------------------------
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background: $bg;
+  border-bottom: 1px solid $line;
+}
+
+// Header and footer line up with the galleries rather than the reading column.
+.page-inner {
+  width: min(#{$wide}, 92vw);
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+.navbar {
+  --bs-navbar-color: #{$muted};
+  --bs-navbar-hover-color: #{$ink};
+  --bs-navbar-active-color: #{$ink};
+  --bs-navbar-toggler-border-color: #{$line};
+  --bs-navbar-toggler-focus-width: .15rem;
+  padding: $s-2 0;
+  font-size: .9375rem;
+}
+
+.navbar-brand {
+  font-family: $font-head;
+  font-weight: 600;
+  font-size: 1.0625rem;
+  letter-spacing: -.01em;
+  color: $ink;
+
+  &:hover, &:focus { color: $ink; }
+}
+
+.navbar-nav { gap: $s-4; }
+
+.nav-link { padding-inline: 0 !important; }
+
+// The page you are on is marked with a line under it, not only a colour.
+.nav-link.active { box-shadow: inset 0 -2px 0 $accent; }
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='#{$menu-icon}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+main {
+  padding-top: $s-5;
+  padding-bottom: $s-6;
+}
+
+.container { max-width: $measure; }
+
+.site-footer {
+  border-top: 1px solid $line;
+  color: $muted;
+  font-size: .875rem;
+  padding: $s-4 0;
+}
+
+// ---------------------------------------------------------------------------
+//  Home page
+// ---------------------------------------------------------------------------
+
+// The home page opens at the same width as the work below it, so the name, the
+// first project and the portrait all line up on the same two edges. Only the
+// About Me text below stays in the narrower reading column.
+.hero {
+  width: min(#{$wide}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-start;
+  gap: $s-5;
+  margin-bottom: $s-5;
+}
+
+// However wide the window is, the one-line introduction stays short enough to
+// take in at a glance.
+.hero-text { max-width: 34ch; }
+
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 3.5rem);
+  margin: 0;
+}
+
+.hero .lede { margin: $s-3 0 0; }
+
+.hero-links {
+  display: flex;
+  gap: $s-4;
+  margin: $s-4 0 0;
+}
+
+.hero-links a {
+  color: $accent;
+  text-decoration: none;
+  box-shadow: inset 0 -1px 0 currentColor;
+  padding-bottom: 2px;
+}
+
+.hero-portrait {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  margin-left: auto;
+}
+
+// ---------------------------------------------------------------------------
+//  Projects gallery
+// ---------------------------------------------------------------------------
+
+// The gallery is allowed to be wider than the reading column it sits inside.
+.gallery-container {
+  width: min(#{$wide}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+// Three across, and three across whatever the number of projects is. An
+// automatic column count would stretch a single project to the full width of
+// the page, which is what a student with one project finished would see.
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: $s-5 $s-4;
+}
+
+.project-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+// Whatever shape of picture you upload is cropped to the same shape as the
+// others, so the gallery stays even.
+.project-card img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 4px;
+  background: $surface;
+}
+
+.project-card .card-title {
+  font-size: 1rem;
+  letter-spacing: -.01em;
+  margin: $s-2 0 0;
+}
+
+.project-card .card-desc {
+  font-size: .875rem;
+  color: $muted;
+  margin: 2px 0 0;
+  line-height: 1.45;
+}
+
+.project-card .card-meta { margin-top: $s-2; }
+
+.project-card:hover img { opacity: .9; }
+.project-card:hover .card-title { color: $accent; }
+
+// The three most recent projects, shown on the home page under a hairline. The
+// cards are exactly the size they are on the Projects page, because both pages
+// build them from _includes/project-card.html.
+.home-work {
+  width: min(#{$wide}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 1px solid $line;
+  padding-top: $s-5;
+  margin-bottom: $s-5;
+}
+
+// The About Me text, and anything else written in index.md, sits under the same
+// hairline and starts at the same left edge as the work above it. Only the text
+// itself is held to the narrower reading column.
+.home-about {
+  width: min(#{$wide}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top: 1px solid $line;
+  padding-top: $s-5;
+}
+
+.home-about > * { max-width: $measure; }
+
+// On the home page a heading is a label for the section under it, not a title
+// competing with the name at the top of the page.
+.home-work h2,
+.home-about h2 {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: $muted;
+  margin: $s-5 0 $s-3;
+}
+
+.home-work > h2:first-child,
+.home-about > h2:first-child { margin-top: 0; }
+
+.more-link {
+  margin-top: $s-4;
+  font-size: .9375rem;
+}
+
+// ---------------------------------------------------------------------------
+//  A single project page
+// ---------------------------------------------------------------------------
+
+.project > .card-meta { margin-bottom: $s-2; }
+.project h1 { margin-bottom: $s-2; }
+.project .lede { margin-bottom: $s-4; }
+
+.project-hero {
+  width: min(#{$wide}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: $s-5;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: $s-5;
+  color: $muted;
+  text-decoration: none;
+  font-size: .9375rem;
+}
+
+.back-link:hover { color: $accent; }
+
+// Pictures inside the text of a project page.
+.inline-image {
+  max-width: 350px;
+  margin: 0 $s-4 $s-3 $s-4;
+  border-radius: 4px;
+  vertical-align: top;
+
+  &-l {
+    @extend .inline-image;
+    float: left;
+    margin-left: 0;
+  }
+
+  &-r {
+    @extend .inline-image;
+    float: right;
+    margin-right: 0;
+  }
+}
+
+// Code, as in the example project.
+.highlight {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  padding: $s-2 $s-3;
+  margin-bottom: $s-3;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.highlight .k  { color: #c792ea; }
+.highlight .nb { color: #82aaff; }
+.highlight .s  { color: #c3e88d; }
+.highlight .mi { color: #f78c6c; }
+.highlight .c  { color: #9aa2b1; }
+.highlight .p  { color: #89ddff; }
+.highlight .o  { color: #ff5370; }
+
+// ---------------------------------------------------------------------------
+//  CV page
+// ---------------------------------------------------------------------------
+
+.cv {
+  width: min(#{$measure-cv}, 92vw);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+// ---------------------------------------------------------------------------
+//  Small screens, printing, and reduced motion
+// ---------------------------------------------------------------------------
+
+// Two across on a tablet, one on a phone. The cards keep their shape at every
+// width because the number of columns changes, not the number of projects.
+@media (max-width: 900px) {
+  .project-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 576px) {
+  .project-gallery { grid-template-columns: minmax(0, 1fr); }
+
+  .hero {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: $s-4;
+  }
+
+  .hero-portrait { margin-left: 0; }
+
+  // Text does not wrap well around a picture in a narrow column, so the
+  // pictures inside project pages go full width instead.
+  .inline-image, .inline-image-l, .inline-image-r {
+    float: none;
+    display: block;
+    max-width: 100%;
+    margin: $s-3 0;
+  }
+}
+
+@media print {
+  header, .site-footer, .back-link { display: none; }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+  }
+
+  main { padding: 0; }
+  .container { max-width: none; }
+
+  .cv {
+    width: auto;
+    position: static;
+    left: auto;
+    transform: none;
+  }
+  a { color: #000; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
